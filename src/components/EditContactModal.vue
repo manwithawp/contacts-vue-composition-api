@@ -1,64 +1,190 @@
 <template>
-    
-  
-  <!-- Modal -->
-  <div class="modal modal-md fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-            <div class="modal-title h3" id="modalTitleId">Add contact</div>
-            <button type="button" class="btn-close mx-1" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body py-4">
-          <div class="row gap-x-10">
-            <div class="col-6 mb-3">
-              <label class="mb-2">First name <sup class="text-danger">*</sup></label>
-              <input type="text" v-modal="firstName" class="form-control form-control-lg" placeholder="Enter name">
+    <div
+        class="modal modal-md fade"
+        id="modal-edit"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="modalTitleId"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div
+                        v-if="contactNew"
+                        class="modal-title h3"
+                        id="modalTitleId"
+                    >
+                        Add contact
+                    </div>
+                    <div v-else class="modal-title h3" id="modalTitleId">
+                        Edit contact
+                    </div>
+                    <button
+                        type="button"
+                        class="btn-close mx-1"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="row gap-x-10">
+                        <div class="col-6 mb-3">
+                            <label class="mb-2"
+                                >First name
+                                <sup class="text-danger">*</sup></label
+                            >
+                            <input
+                                type="text"
+                                v-model="contact.firstName"
+                                class="form-control form-control-lg"
+                                placeholder="Enter name"
+                            />
+                            <div
+                                v-for="error in validate.contact.firstName
+                                    .$errors"
+                                :key="error.$uid"
+                                class="text-danger my-2"
+                            >
+                                {{ error.$message }}
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="mb-2"
+                                >Last name
+                                <sup class="text-danger">*</sup></label
+                            >
+                            <input
+                                type="text"
+                                v-model="contact.lastName"
+                                class="form-control form-control-lg"
+                                placeholder="Enter last name"
+                            />
+                            <div
+                                v-for="error in validate.contact.lastName
+                                    .$errors"
+                                :key="error.$uid"
+                                class="text-danger my-2"
+                            >
+                                {{ error.$message }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2"
+                            >E-mail <sup class="text-danger">*</sup></label
+                        >
+                        <input
+                            type="text"
+                            v-model="contact.email"
+                            class="form-control form-control-lg"
+                            placeholder="Enter email"
+                        />
+                        <div
+                            v-for="error in validate.contact.email.$errors"
+                            :key="error.$uid"
+                            class="text-danger my-2"
+                        >
+                            {{ error.$message }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2">Company</label>
+                        <input
+                            type="text"
+                            v-model="contact.company"
+                            class="form-control form-control-lg"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2">Job title</label>
+                        <input
+                            type="text"
+                            v-model="contact.jobTitle"
+                            class="form-control form-control-lg"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2">Country</label>
+                        <multiselect
+                            v-model="contact.country"
+                            :options="countries"
+                            placeholder="Pick a value"
+                        >
+                        </multiselect>
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2">Phone</label>
+                        <input
+                            v-model="contact.phone"
+                            type="tel"
+                            class="form-control form-control-lg"
+                        />
+                        <div
+                            v-for="error in validate.contact.phone.$errors"
+                            :key="error.$uid"
+                            class="text-danger my-2"
+                        >
+                            {{ error.$message }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        v-if="contactNew"
+                        type="button"
+                        class="btn btn-success btn-lg"
+                        @click="$emit('add-contact')"
+                    >
+                        Add
+                    </button>
+                    <template v-else>
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-lg"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            @click="saveContact"
+                        >
+                            Save
+                        </button>
+                    </template>
+                </div>
             </div>
-            <div class="col-6 mb-3">
-              <label class="mb-2">Last name <sup class="text-danger">*</sup></label>
-              <input type="text" v-modal="lastName" class="form-control form-control-lg" placeholder="Enter last name">
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="mb-2">E-mail <sup class="text-danger">*</sup></label>
-            <input type="text" v-model="email" class="form-control form-control-lg" placeholder="Enter email">
-          </div>
-          <div class="mb-3">
-            <label class="mb-2">Company</label>
-            <input type="text" v-model="company" class="form-control form-control-lg">
-          </div>
-          <div class="mb-3">
-            <label class="mb-2">Job title</label>
-            <input type="text" v-model="jobTitle" class="form-control form-control-lg">
-          </div>
-          <div class="mb-3">
-            <label class="mb-2">Country</label>
-            <multiselect 
-              v-model="country" 
-              :options="countries"
-              placeholder="Pick a value">
-            </multiselect>
-          </div>
-          <div class="mb-3">
-            <label class="mb-2">Phone</label>
-            <input type="tel" class="form-control form-control-lg">
-          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-lg" @click="add">Add</button>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
-    import Multiselect from 'vue-multiselect'
-    
-    export default {
-        components: {
-          Multiselect
-        }
-    }
+import Multiselect from "vue-multiselect";
+import country from "country-list-js";
+
+export default {
+    props: {
+        contactNew: {
+            type: Boolean,
+        },
+        contact: {
+            type: Array,
+            required: true,
+        },
+        validate: {
+            type: Array,
+        },
+    },
+    components: {
+        Multiselect,
+    },
+    data() {
+        return {
+            newContact: null,
+            countries: country.names(),
+        };
+    },
+};
 </script>
