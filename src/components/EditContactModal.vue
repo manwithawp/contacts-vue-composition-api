@@ -212,20 +212,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.modal-content {
-    background: var(--color-background);
-}
-
-@media (prefers-color-scheme: dark) {
-    .btn-close {
-        margin-right: 0.015rem !important;
-        background-color: var(--color-text);
-    }
-    :root {
-        --bs-border-color: #3f3f45;
-    }
-}
+<style lang="scss">
 .multiselect__tags {
     min-height: calc(1.5em + 1rem + 2px);
     font-size: 1.15rem;

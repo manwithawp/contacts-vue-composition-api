@@ -1,5 +1,10 @@
 <template>
-    <div class="accordion-item accordion-item--contact mb-4">
+    <div
+        class="accordion-item accordion-item--contact mb-4"
+        :class="{
+            active: activeContactIdx === contactIdx,
+        }"
+    >
         <div class="accordion-header" :id="'contactHeading-' + contactIdx">
             <button
                 class="accordion-button"

@@ -70,8 +70,8 @@ export default {
             editModal: "",
             contacts: null,
             filterQuanty: 0,
-            contactFilter: "",
             contactNew: false,
+            contactFilter: "",
             contactEditIndex: "",
             contactEditSuccess: "",
             contact: {

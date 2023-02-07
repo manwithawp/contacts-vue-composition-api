@@ -86,7 +86,18 @@ body {
   box-shadow: none !important;
 }
 
+.modal-content {
+  background: var(--color-background);
+}
+
 @media (prefers-color-scheme: dark) {
+  .btn-close {
+    margin-right: 0.015rem !important;
+    background-color: var(--color-text);
+  }
+  :root {
+    --bs-border-color: #3f3f45;
+  }
   .form-control {
     color: #e1e3e6;
     background: #454545 !important;
