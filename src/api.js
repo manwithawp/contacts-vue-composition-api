@@ -6,7 +6,6 @@ export const loadContacts = async () => {
     } else {
         const response = await fetch(contactsApiUrl)
         const data = await response.json()
-        // const mapped = data.map((item, id) => ({...item, id}))
         if (!localStorage.contactsList) {
             localStorage.contactsList = JSON.stringify(data)
         }

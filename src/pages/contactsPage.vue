@@ -33,28 +33,29 @@
     </div>
 
     <edit-contact-modal
-        :validate="this.v$"
         :contact="contact"
+        :validate="v$"
         :contactNew="contactNew"
-        :contactEditSuccess="contactEditSuccess"
         @add-contact="addContact"
         @save-contact="saveContact"
         @add-more="contactEditSuccess = ''"
+        :contactEditSuccess="contactEditSuccess"
     />
 </template>
 
 <script>
-import { loadContacts, recordContacts } from "./api";
+import { loadContacts, recordContacts } from "../api";
 
-import EditContactModal from "./components/EditContactModal.vue";
-import AddButton from "./components/AddButton.vue";
-import FilterContact from "./components/FilterContact.vue";
-import ContactItem from "./components/ContactItem.vue";
+import EditContactModal from "../components/EditContactModal.vue";
+import AddButton from "../components/AddButton.vue";
+import FilterContact from "../components/FilterContact.vue";
+import ContactItem from "../components/ContactItem.vue";
 
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 
 export default {
+    name: "contactPage",
     components: {
         AddButton,
         ContactItem,
@@ -136,14 +137,15 @@ export default {
     },
     computed: {
         showContacts() {
-            const filter = this.contactFilter.trim();
+            const filter = this.contactFilter.trim().toLowerCase();
             const contactsShown = this.contacts.filter((contact) => {
-                const fullname =
-                    `${contact.firstName} ${contact.lastName}`.trim();
+                const fullname = `${contact.firstName} ${contact.lastName}`
+                    .trim()
+                    .toLowerCase();
                 return (
-                    fullname.indexOf(filter) > -1 ||
-                    contact.company.indexOf(filter) > -1 ||
-                    contact.email.indexOf(filter) > -1
+                    fullname.toLowerCase().indexOf(filter) > -1 ||
+                    contact.company.toLowerCase().indexOf(filter) > -1 ||
+                    contact.email.toLowerCase().indexOf(filter) > -1
                 );
             });
             this.filterQuanty = contactsShown.length;
