@@ -107,23 +107,13 @@ export default {
             required: true,
         },
     },
-    data() {
-        return {
-            // contact: ""
-        };
-    },
-    mounted() {},
-    // methods: {
-    //     setEditContact() {
-    //         this.$emit("editContact");
-    //     },
-    // },
 };
 </script>
 
 <style lang="scss" scoped>
-.accordion-dropdown:focus {
-    z-index: 5;
+.accordion-dropdown:focus,
+.accordion-dropdown:focus-visible {
+    z-index: 4;
 }
 .accordion-dropdown {
     top: 50%;

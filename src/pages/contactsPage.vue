@@ -69,9 +69,9 @@ export default {
         return {
             editModal: "",
             contacts: null,
-            contactNew: false,
             filterQuanty: 0,
             contactFilter: "",
+            contactNew: false,
             contactEditIndex: "",
             contactEditSuccess: "",
             contact: {
