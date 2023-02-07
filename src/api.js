@@ -13,3 +13,7 @@ export const loadContacts = async () => {
         return data
     }
 }
+
+export const recordContacts = (contacts) => {
+    localStorage.contactsList = JSON.stringify(contacts)
+}

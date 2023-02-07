@@ -1,33 +1,32 @@
 <template>
     <input
         type="text"
-        v-model="contactSearch"
+        v-model="contactFilter"
         class="form-control form-control-lg"
         placeholder="Search by name, company or email"
     />
-    <div v-if="contactSearch" class="mt-3 text-center">
-        {{ searchQuanty }} contact<template v-if="searchQuanty > 1">s</template>
+    <div v-if="contactFilter" class="mt-3 text-center">
+        {{ filterQuanty }} contact<template v-if="filterQuanty > 1">s</template>
         found
     </div>
 </template>
 
 <script>
-import { numeric } from "@vuelidate/validators";
 export default {
     data() {
         return {
-            contactSearch: "",
+            contactFilter: "",
         };
     },
+    emits: ["input"],
     props: {
-        searchQuanty: {
-            type: String,
+        filterQuanty: {
+            type: Number,
             required: true,
         },
     },
     watch: {
-        contactSearch(value) {
-            console.log(value);
+        contactFilter(value) {
             this.$emit("input", value);
         },
     },

@@ -1,13 +1,16 @@
 <template>
     <div class="accordion-item accordion-item--contact mb-4">
-        <div class="accordion-header" :id="'contactHeading-' + contact.id">
+        <div class="accordion-header" :id="'contactHeading-' + contactIdx">
             <button
                 class="accordion-button"
                 type="button"
                 data-bs-toggle="collapse"
-                :data-bs-target="'#contact-' + contact.id"
-                aria-expanded="true"
-                aria-controls="collapseOne"
+                :aria-expanded="contactIdx === 0 ? true : false"
+                :data-bs-target="'#contact-' + contactIdx"
+                :aria-controls="'collapse' + contactIdx"
+                :class="{
+                    collapsed: contactIdx !== 0,
+                }"
             >
                 <span class="d-block">
                     <span class="h4"
@@ -56,12 +59,12 @@
             </div>
         </div>
         <div
-            :id="'contact-' + contact.id"
+            :id="'contact-' + contactIdx"
             class="accordion-collapse collapse"
             :class="{
-                show: contact.id === 0,
+                show: contactIdx === 0,
             }"
-            :aria-labelledby="'contactHeading-' + contact.id"
+            :aria-labelledby="'contactHeading-' + contactIdx"
             data-bs-parent="#accordionContacts"
         >
             <div class="accordion-body">
@@ -97,6 +100,10 @@ export default {
     props: {
         contact: {
             type: Object,
+            required: true,
+        },
+        contactIdx: {
+            type: Number,
             required: true,
         },
     },
