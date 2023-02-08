@@ -7,7 +7,7 @@
         aria-labelledby="modalTitleId"
         aria-hidden="true"
     >
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div
@@ -32,11 +32,11 @@
                         class="text-success h4 text-center"
                         v-if="contactEditSuccess"
                     >
-                        {{ contactEditSuccess }}
+                        {{ contactEditSuccess.text }}
                     </div>
                     <template v-else>
                         <div class="row gap-x-10">
-                            <div class="col-6 mb-3">
+                            <div class="col-sm-6 mb-3">
                                 <label class="mb-2"
                                     >First name
                                     <sup class="text-danger">*</sup></label
@@ -51,12 +51,12 @@
                                     v-for="error in validate.contact.firstName
                                         .$errors"
                                     :key="error.$uid"
-                                    class="text-danger my-2"
+                                    class="text-danger mt-2"
                                 >
                                     {{ error.$message }}
                                 </div>
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-sm-6 mb-3">
                                 <label class="mb-2"
                                     >Last name
                                     <sup class="text-danger">*</sup></label
@@ -71,7 +71,7 @@
                                     v-for="error in validate.contact.lastName
                                         .$errors"
                                     :key="error.$uid"
-                                    class="text-danger my-2"
+                                    class="text-danger mt-2"
                                 >
                                     {{ error.$message }}
                                 </div>
@@ -90,7 +90,7 @@
                             <div
                                 v-for="error in validate.contact.email.$errors"
                                 :key="error.$uid"
-                                class="text-danger my-2"
+                                class="text-danger mt-2"
                             >
                                 {{ error.$message }}
                             </div>
@@ -123,8 +123,8 @@
                         <div class="mb-3">
                             <label class="mb-2">Phone</label>
                             <input
-                                v-model="contact.phone"
                                 type="tel"
+                                v-model="contact.phone"
                                 class="form-control form-control-lg"
                             />
                         </div>
@@ -141,6 +141,7 @@
                         </button>
                         <button
                             type="button"
+                            v-if="contactEditSuccess.type === 'add'"
                             class="btn btn-success btn-lg"
                             @click="$emit('add-more', '')"
                         >
@@ -161,12 +162,16 @@
                                 type="button"
                                 class="btn btn-danger btn-lg"
                                 data-bs-dismiss="modal"
+                                @click="$emit('cancel-edit-contact')"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="button"
                                 class="btn btn-success btn-lg"
+                                :class="{
+                                    disabled: contactHasChange === false,
+                                }"
                                 @click="$emit('save-contact')"
                             >
                                 Save
@@ -199,6 +204,10 @@ export default {
             type: String,
             required: false,
         },
+        contactHasChange: {
+            type: Boolean,
+            required: false,
+        },
     },
     components: {
         Multiselect,
@@ -211,6 +220,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss">
-</style>

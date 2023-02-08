@@ -1,10 +1,5 @@
 <template>
-    <div
-        class="accordion-item accordion-item--contact mb-4"
-        :class="{
-            active: activeContactIdx === contactIdx,
-        }"
-    >
+    <div class="accordion-item accordion-item--contact mb-4">
         <div class="accordion-header" :id="'contactHeading-' + contactIdx">
             <button
                 class="accordion-button"
@@ -17,14 +12,15 @@
                     collapsed: contactIdx !== 0,
                 }"
             >
-                <span class="d-block">
+                <span class="d-block text-truncate">
                     <span class="h4"
                         >{{ contact.firstName }} {{ contact.lastName }}
                     </span>
                     <span class="d-block"
                         >{{ contact.jobTitle }}
-                        <template v-if="contact.company"
-                            >at {{ contact.company }}</template
+                        <template v-if="contact.company">
+                            <template v-if="!contact.jobTitle">Work </template>
+                            at {{ contact.company }}</template
                         ></span
                     >
                 </span>
@@ -36,6 +32,7 @@
                     id="dropdownMenuButton1"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    @click="$emit('toggle-dropdown', $event)"
                 >
                     <span class="btn-menu__dots"></span>
                     <span class="btn-menu__dots"></span>
@@ -116,8 +113,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.accordion-dropdown:focus,
-.accordion-dropdown:focus-visible {
+// .accordion-contact-name {
+//     max-width: 100%;
+//     overflow: hidden;
+//     white-space: nowrap;
+//     text-overflow: ellipsis;
+// }
+.accordion-dropdown.active {
     z-index: 4;
 }
 .accordion-dropdown {
@@ -140,6 +142,7 @@ export default {
 .btn-menu__dots {
     width: 8px;
     height: 8px;
+    z-index: -1;
     display: block;
     margin-left: 2px;
     margin-right: 2px;
@@ -149,12 +152,20 @@ export default {
 .btn-menu:hover .btn-menu__dots {
     background: green;
 }
+.contact-table {
+    max-width: 100%;
+}
 .contact-table tr td {
     padding-right: 15px;
+    vertical-align: top;
+}
+.contact-table tr td:last-child {
+    word-break: break-all;
 }
 .accordion-item--contact .accordion-body,
 .accordion-item--contact .accordion-button {
     padding-left: 80px;
+    padding-right: 60px;
 }
 .accordion-item--contact .accordion-button::after {
     top: 23px;
@@ -173,9 +184,53 @@ export default {
     background-color: #e9f1fe;
 }
 @media (prefers-color-scheme: dark) {
+    .accordion-button {
+        color: #181818;
+        background: #c6daf5;
+    }
     .accordion-item {
         color: #e1e3e6;
         background: #434343;
+    }
+    .dropdown-menu {
+        background: #181818;
+    }
+    .dropdown-item {
+        color: #fff;
+    }
+}
+@media (max-width: 767px) {
+    .btn-menu__dots {
+        width: 6px;
+        height: 6px;
+    }
+    .btn-menu {
+        width: 36px;
+        height: 36px;
+    }
+    .contact-table,
+    .contact-table tr {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .contact-table tr td {
+        display: block;
+    }
+    .accordion-item--contact .accordion-body {
+        padding-right: 15px;
+    }
+    .accordion-item--contact .accordion-body,
+    .accordion-item--contact .accordion-button {
+        padding-left: 55px;
+    }
+    .accordion-item--contact .accordion-button {
+        padding-right: 50px;
+    }
+    .accordion-item--contact .accordion-button[data-v-f016766c]::after {
+        left: 17px;
+    }
+    .accordion-dropdown {
+        right: 8px;
     }
 }
 </style>

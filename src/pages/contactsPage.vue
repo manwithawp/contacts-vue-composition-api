@@ -26,20 +26,23 @@
                 :key="idx"
                 :contactIdx="idx"
                 :contact="contact"
-                @delete-contact="editContact('delete', $event)"
-                @edit-contact="editContact('edit', $event)"
+                @edit-contact="editContact($event)"
+                @delete-contact="deleteContact($event)"
+                @toggle-dropdown="toggleDropdown($event)"
             />
         </div>
     </div>
 
     <edit-contact-modal
-        :contact="contact"
         :validate="v$"
+        :contact="contact"
         :contactNew="contactNew"
+        :contactHasChange="contactHasChange"
+        :contactEditSuccess="contactEditSuccess"
         @add-contact="addContact"
         @save-contact="saveContact"
         @add-more="contactEditSuccess = ''"
-        :contactEditSuccess="contactEditSuccess"
+        @cancel-edit-contact="cancelEditContact"
     />
 </template>
 
@@ -74,6 +77,7 @@ export default {
             contactFilter: "",
             contactEditIndex: "",
             contactEditSuccess: "",
+            contactHasChange: false,
             contact: {
                 phone: "",
                 email: "",
@@ -101,23 +105,26 @@ export default {
             this.contactNew = true;
             this.contactEditSuccess = "";
         },
-        editContact(action, contact) {
+        deleteContact(contact) {
+            const i = this.contacts.lastIndexOf(contact);
+            if (i > -1) this.contacts.splice(i, 1);
+            this.renewContacts();
+        },
+        editContact(contact) {
             this.contactNew = false;
             this.contactEditSuccess = "";
-            if (action === "delete") {
-                const i = this.contacts.lastIndexOf(contact);
-                if (i > -1) this.contacts.splice(i, 1);
-                this.renewContacts();
-            } else {
-                this.contactEditIndex = this.contacts.lastIndexOf(contact);
-                this.contact = contact;
-            }
+            this.contactEditIndex = this.contacts.lastIndexOf(contact);
+            this.contact = contact;
+            localStorage.editContact = JSON.stringify(contact);
         },
         async addContact() {
             const result = await this.v$.$validate();
             if (result) {
                 this.contacts.push(this.contact);
-                this.contactEditSuccess = "Contact successfully added!";
+                this.contactEditSuccess = {
+                    text: "Contact successfully added!",
+                    type: "add",
+                };
                 this.renewContacts();
             }
         },
@@ -125,14 +132,28 @@ export default {
             const result = await this.v$.$validate();
             if (result) {
                 this.contacts[this.contactEditIndex] = this.contact;
-                this.contactEditSuccess = "Contact successfully saved!";
+                this.contactEditSuccess = {
+                    text: "Contact successfully saved!",
+                    type: "edit",
+                };
                 this.renewContacts();
             }
+        },
+        cancelEditContact() {
+            this.contacts[this.contactEditIndex] = JSON.parse(
+                localStorage.editContact
+            );
         },
         renewContacts() {
             this.v$.$reset();
             recordContacts(this.contacts);
             this.contact = this.$options.data().contact;
+        },
+        toggleDropdown(event) {
+            Array.from(
+                document.querySelectorAll(".accordion-dropdown")
+            ).forEach((el) => el.classList.remove("active"));
+            event.srcElement.parentElement.classList.add("active");
         },
     },
     computed: {
@@ -150,6 +171,13 @@ export default {
             });
             this.filterQuanty = contactsShown.length;
             return contactsShown;
+        },
+        contactHasChange() {
+            if (localStorage.editContact === JSON.stringify(this.contact)) {
+                return false;
+            } else {
+                return true;
+            }
         },
     },
 };
