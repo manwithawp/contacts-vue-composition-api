@@ -143,6 +143,7 @@ export default {
             this.contacts[this.contactEditIndex] = JSON.parse(
                 localStorage.editContact
             );
+            this.contact = this.$options.data().contact;
         },
         renewContacts() {
             this.v$.$reset();

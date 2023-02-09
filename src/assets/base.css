@@ -82,6 +82,7 @@ body {
   font-size: 1.15rem;
 }
 
+.multiselect__tags:hover .multiselect__placeholder,
 .form-control:hover::placeholder {
   color: #000;
 }
@@ -168,8 +169,9 @@ body {
     border-color: #3f3f44;
   }
 
+  .multiselect__tags:hover .multiselect__placeholder,
   .form-control:hover::placeholder {
-    color: #000;
+    color: #fff;
   }
   .btn-close {
     margin-right: 0.015rem !important;

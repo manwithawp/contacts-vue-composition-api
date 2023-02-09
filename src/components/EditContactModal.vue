@@ -25,6 +25,7 @@
                         class="btn-close mx-1"
                         data-bs-dismiss="modal"
                         aria-label="Close"
+                        @click="$emit('cancel-edit-contact')"
                     ></button>
                 </div>
                 <div class="modal-body py-4">
@@ -99,6 +100,7 @@
                             <label class="mb-2">Company</label>
                             <input
                                 type="text"
+                                placeholder="Enter company name"
                                 v-model="contact.company"
                                 class="form-control form-control-lg"
                             />
@@ -108,6 +110,7 @@
                             <input
                                 type="text"
                                 v-model="contact.jobTitle"
+                                placeholder="Enter job title"
                                 class="form-control form-control-lg"
                             />
                         </div>
@@ -124,6 +127,7 @@
                             <label class="mb-2">Phone</label>
                             <input
                                 type="tel"
+                                placeholder="Enter phone number"
                                 v-model="contact.phone"
                                 class="form-control form-control-lg"
                             />
