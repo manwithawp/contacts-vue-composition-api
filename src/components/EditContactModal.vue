@@ -164,7 +164,7 @@
                         <template v-else>
                             <button
                                 type="button"
-                                class="btn btn-danger btn-lg"
+                                class="btn btn-link btn-lg"
                                 data-bs-dismiss="modal"
                                 @click="$emit('cancel-edit-contact')"
                             >
