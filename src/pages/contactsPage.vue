@@ -28,11 +28,16 @@
         ></b-form-input>
       </b-form-group>
 
-      <div v-if="contactsShown" class="mt-3 text-center">
-        {{ contactsShown.lenght }} contact<template v-if="contactsShown.lenght !== 1"
-          >s</template
-        >
+      <div v-if="searchQuery != false" class="mt-3 text-center">
+        {{ contactsShown.length }} contact
+        <template v-if="contactsShown.length !== 1">s</template>
         found
+      </div>
+
+      <div v-if="contacts.length == 0">
+        <b-button size="lg" variant="primary" @click="contactModal = !modal"
+          >Add</b-button
+        >
       </div>
     </div>
     <div v-if="!contactsStore.contacts" class="text-center h5">loading ...</div>

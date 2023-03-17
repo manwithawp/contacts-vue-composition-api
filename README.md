@@ -1,6 +1,8 @@
-# test-vue-contact
+# contacts vue3 composition api
 
 This template should help get you started developing with Vue 3 in Vite.
+
+Use components from: https://github.com/bootstrap-vue/bootstrap-vue-next
 
 ## Recommended IDE Setup
 
