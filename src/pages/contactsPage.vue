@@ -114,7 +114,6 @@ import { useContactsStore } from "../store/contactsStore";
 
 import Contact from "../components/ContactItem.vue";
 import EditContactForm from "../components/EditContactForm.vue";
-import FilterContact from "../components/FilterContact.vue";
 import { useContacts } from "../hooks/useContacts";
 import { searchedContacts } from "../hooks/useSearchedContacts";
 
