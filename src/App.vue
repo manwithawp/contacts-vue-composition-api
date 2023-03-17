@@ -3,6 +3,7 @@
 </template>
 <script>
 import contactsPage from "./pages/contactsPage.vue";
+
 export default {
     name: "App",
     components: {

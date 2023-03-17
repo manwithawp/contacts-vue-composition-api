@@ -25,40 +25,26 @@
                     >
                 </span>
             </button>
-            <div class="dropdown accordion-dropdown">
-                <button
-                    class="btn-menu"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    @click="$emit('toggle-dropdown', $event)"
+            <b-dropdown
+                no-caret
+                variant="link"
+                toggle-class="btn-menu"
+                :v-model="'contactDropdown-' + contactIdx"
+                text="Button text via Prop"
+                class="accordion-dropdown"
+            >
+                <template #button-content>
+                    <span class="btn-menu__dots"></span>
+                    <span class="btn-menu__dots"></span>
+                    <span class="btn-menu__dots"></span>
+                </template>
+                <b-dropdown-item @click="editContact(contact)"
+                    >Edit</b-dropdown-item
                 >
-                    <span class="btn-menu__dots"></span>
-                    <span class="btn-menu__dots"></span>
-                    <span class="btn-menu__dots"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li>
-                        <button
-                            class="dropdown-item"
-                            href="#modal-edit"
-                            data-bs-toggle="modal"
-                            @click="$emit('edit-contact', contact)"
-                        >
-                            Edit
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            class="dropdown-item"
-                            @click="$emit('delete-contact', contact)"
-                        >
-                            Delete
-                        </button>
-                    </li>
-                </ul>
-            </div>
+                <b-dropdown-item @click="$emit('delete-contact', contact)"
+                    >Delete</b-dropdown-item
+                >
+            </b-dropdown>
         </div>
         <div
             :id="'contact-' + contactIdx"
@@ -82,13 +68,21 @@
                             <td>
                                 <b>Email</b>
                             </td>
-                            <td>{{ contact.email }}</td>
+                            <td>
+                                <a :href="'tel:' + contact.email">{{
+                                    contact.email
+                                }}</a>
+                            </td>
                         </tr>
                         <tr v-if="contact.phone">
                             <td>
                                 <b>Phone</b>
                             </td>
-                            <td>{{ contact.phone }}</td>
+                            <td>
+                                <a :href="'tel:' + contact.phone">{{
+                                    contact.phone
+                                }}</a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -97,47 +91,69 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        contact: {
-            type: Object,
-            required: true,
-        },
-        contactIdx: {
-            type: Number,
-            required: true,
-        },
+<script setup>
+import { ref, onMounted } from "vue";
+import { useContactsStore } from "../store/contactsStore";
+
+const props = defineProps({
+    contact: {
+        type: Object,
+        required: true,
     },
-};
+    contactIdx: {
+        type: Number,
+        required: true,
+    },
+});
 </script>
 
-<style lang="scss" scoped>
-// .accordion-contact-name {
-//     max-width: 100%;
-//     overflow: hidden;
-//     white-space: nowrap;
-//     text-overflow: ellipsis;
-// }
+<style lang="scss">
+.btn-menu {
+    border: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    padding: 0 !important;
+    background: none;
+}
+.btn-menu .btn-content {
+    border: 0;
+    width: 40px;
+    height: 40px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
 .accordion-dropdown.active {
     z-index: 4;
 }
+@media (prefers-color-scheme: dark) {
+    .accordion-button {
+        color: #181818;
+        background: #c6daf5;
+    }
+    .accordion-item {
+        color: #e1e3e6;
+        background: #434343;
+    }
+    .dropdown-menu {
+        background: #1d1d1d !important;
+    }
+    .dropdown-item {
+        color: #fff !important;
+    }
+    .dropdown-item:hover {
+        background-color: blue !important;
+    }
+}
+</style>
+<style lang="scss" scoped>
 .accordion-dropdown {
     top: 50%;
     z-index: 3;
     right: 15px;
     position: absolute;
     transform: translateY(-50%);
-}
-.btn-menu {
-    border: 0;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    padding: 0;
-    justify-content: center;
-    align-items: center;
-    background: none;
 }
 .btn-menu__dots {
     width: 8px;
@@ -191,12 +207,6 @@ export default {
     .accordion-item {
         color: #e1e3e6;
         background: #434343;
-    }
-    .dropdown-menu {
-        background: #181818;
-    }
-    .dropdown-item {
-        color: #fff;
     }
 }
 @media (max-width: 767px) {

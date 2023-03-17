@@ -74,22 +74,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.form-control:focus::placeholder {
+/* .form-control:focus::placeholder {
   color: transparent;
-}
+} */
 
-.form-control-lg {
+/* .form-control-lg {
   font-size: 1.15rem;
-}
-
+} */
+/* 
 .multiselect__tags:hover .multiselect__placeholder,
 .form-control:hover::placeholder {
   color: #000;
-}
+} */
 
-.form-control:focus-visible::placeholder {
+/* .form-control:focus-visible::placeholder {
   color: transparent !important;
-}
+} */
 
 .modal-content {
   background: var(--color-background);
@@ -146,6 +146,14 @@ body {
   border-color: #86b7fe;
 }
 
+.label-required:after {
+  content: "*";
+  color: red;
+  font-size: 12px;
+  vertical-align: top;
+  margin-left: 5px;
+}
+
 @media (prefers-color-scheme: dark) {
   .multiselect__input,
   .multiselect__single {
@@ -169,10 +177,10 @@ body {
     border-color: #3f3f44;
   }
 
-  .multiselect__tags:hover .multiselect__placeholder,
+  /* .multiselect__tags:hover .multiselect__placeholder,
   .form-control:hover::placeholder {
     color: #fff;
-  }
+  } */
   .btn-close {
     margin-right: 0.015rem !important;
     background-color: var(--color-text);
@@ -181,19 +189,19 @@ body {
     --bs-border-color: #3f3f45;
   }
   .form-control {
-    color: #e1e3e6;
-    background: #454545 !important;
+    color: #e1e3e6 !important;
+    background-color: #454545 !important;
     border-color: #3f3f44;
   }
-  .form-control::placeholder {
+  /* .form-control::placeholder {
     color: #adadad;
-  }
-  .form-control:focus,
+  } */
+  /* .form-control:focus,
   .form-control:focus-visible {
     color: #e1e3e6;
     border-color: #000;
     box-shadow: 0 0 0 0.25rem rgb(0 0 0 / 25%);
-  }
+  } */
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {

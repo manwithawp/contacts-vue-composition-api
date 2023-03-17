@@ -1,82 +1,149 @@
 <template>
-    <div class="container pt-5">
-        <div class="mb-5 text-center">
-            <h1>Contacts</h1>
-        </div>
-
-        <div class="mb-5">
-            <div class="row align-items-center mb-2">
-                <div class="col mb-2">
-                    <div class="h3">Contacts</div>
-                </div>
-                <div class="col-auto mb-2">
-                    <!-- <add-button @add-new-contact="addNewContact" /> -->
-                </div>
-            </div>
-
-            <!-- <filter-contact
-                :filterQuanty="filterQuanty"
-                @input="contactFilter = $event"
-            /> -->
-        </div>
-        <!-- <div v-if="!contacts" class="text-center h5">loading ...</div>
-        <div v-else class="accordion" id="accordionContacts">
-            <contact-item
-                v-for="(contact, idx) in showContacts"
-                :key="idx"
-                :contactIdx="idx"
-                :contact="contact"
-                @edit-contact="editContact($event)"
-                @delete-contact="deleteContact($event)"
-                @toggle-dropdown="toggleDropdown($event)"
-            />
-        </div> -->
+  <div class="container pt-5">
+    <div class="mb-5 text-center">
+      <h1>Contacts</h1>
     </div>
 
-    <!-- <edit-contact-modal
-        :validate="v$"
+    <div class="mb-5">
+      <div class="row align-items-center mb-2">
+        <div class="col mb-2">
+          <div class="h3">Contacts</div>
+        </div>
+        <div class="col-auto mb-2">
+          <b-button size="lg" variant="primary" @click="contactModal = !modal"
+            >Add</b-button
+          >
+        </div>
+      </div>
+
+      <b-form-group
+        label="Search by name, company or email"
+        label-for="input-floating-1"
+        floating
+      >
+        <b-form-input
+          v-model="searchQuery"
+          trim
+          placeholder="Search by name, company or email"
+        ></b-form-input>
+      </b-form-group>
+
+      <div v-if="contactsShown" class="mt-3 text-center">
+        {{ contactsShown.lenght }} contact<template v-if="contactsShown.lenght !== 1"
+          >s</template
+        >
+        found
+      </div>
+    </div>
+    <div v-if="!contactsStore.contacts" class="text-center h5">loading ...</div>
+    <div v-else class="accordion" id="accordionContacts">
+      <contact
+        v-for="(contact, idx) in contactsShown"
+        :key="idx"
+        :contactIdx="idx"
         :contact="contact"
+        @edit-contact="editContact($event)"
+        @delete-contact="deleteContact($event)"
+        @toggle-dropdown="toggleDropdown($event)"
+      />
+    </div>
+
+    <b-modal v-model="contactModal" :centered="true">
+      <template v-slot:header>
+        <div v-if="contactNew" class="modal-title h3" id="modalTitleId">Add contact</div>
+        <div v-else class="modal-title h3" id="modalTitleId">Edit contact</div>
+        <button
+          type="button"
+          class="btn-close mx-1"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          @click="contactModal = false"
+        ></button>
+      </template>
+
+      <edit-contact-form
         :contactNew="contactNew"
-        :contactHasChange="contactHasChange"
         :contactEditSuccess="contactEditSuccess"
-        @add-contact="addContact"
-        @save-contact="saveContact"
-        @add-more="contactEditSuccess = ''"
-        @cancel-edit-contact="cancelEditContact"
-    /> -->
+      />
 
-    <b-button @click="modal = !modal"> Toggle modal </b-button>
-
-    <b-modal v-model="modal">
-        <template v-slot:header>
-            <h1>Здесь мог быть заголовок страницы</h1>
+      <template v-slot:footer>
+        <template v-if="contactEditSuccess">
+          <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button
+            type="button"
+            v-if="contactEditSuccess.type === 'add'"
+            class="btn btn-success btn-lg"
+            @click="$emit('add-more', '')"
+          >
+            Add More
+          </button>
         </template>
-        <edit-contact-form />
+        <template v-else>
+          <button
+            v-if="contactNew"
+            type="button"
+            class="btn btn-success btn-lg"
+            @click="$emit('add-contact')"
+          >
+            Add
+          </button>
+          <template v-else>
+            <button type="button" class="btn btn-link btn-lg" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-success btn-lg"
+              @click="$emit('save-contact')"
+            >
+              Save
+            </button>
+          </template>
+        </template>
+      </template>
     </b-modal>
+  </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 
+import { useContactsStore } from "../store/contactsStore";
+
+import Contact from "../components/ContactItem.vue";
 import EditContactForm from "../components/EditContactForm.vue";
-import AddButton from "../components/AddButton.vue";
 import FilterContact from "../components/FilterContact.vue";
-import ContactItem from "../components/ContactItem.vue";
+import { useContacts } from "../hooks/useContacts";
+import { searchedContacts } from "../hooks/useSearchedContacts";
 
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers } from "@vuelidate/validators";
+const searchQuery = ref("");
 
-export default {
-    components: {
-        EditContactForm,
-    },
-    setup() {
-        const modal = ref(false);
-        return {
-            modal,
-        };
-    },
+const contactModal = ref(false);
+const contactNew = ref(false);
+const contactsStore = useContactsStore();
+const contactEditSuccess = ref("");
+const contactEditIndex = ref("");
+
+const { contacts } = useContacts();
+const { contactsShown } = searchedContacts(contacts, searchQuery);
+
+// onMounted(() => {
+//     contactsStore.getContacts();
+// });
+
+const editContact = (contact) => {
+  const contactEditIndex = contactsStore.contacts.indexOf(contact);
+  contactsStore.contact = contact;
+  contactsStore.contactNew = false;
 };
+// return {
+//     modal,
+//     contactNew,
+//     contactsStore,
+//     contactEditSuccess,
+// };
 
 // export default {
 //     name: "contactPage",
@@ -85,31 +152,6 @@ export default {
 //         ContactItem,
 //         FilterContact,
 //         EditContactModal,
-//     },
-//     setup() {
-//         const modal = ref(false);
-//         // return { v$: useVuelidate() };
-//         // const contacts =
-//     },
-//     data() {
-//         return {
-//             editModal: "",
-//             contacts: null,
-//             filterQuanty: 0,
-//             contactNew: false,
-//             contactFilter: "",
-//             contactEditIndex: "",
-//             contactEditSuccess: "",
-//             contactHasChange: false,
-//             contact: {
-//                 phone: "",
-//                 email: "",
-//                 country: "",
-//                 company: "",
-//                 lastName: "",
-//                 firstName: "",
-//             },
-//         };
 //     },
 //     // validations() {
 //     //     return {
@@ -132,13 +174,6 @@ export default {
 //     //         const i = this.contacts.lastIndexOf(contact);
 //     //         if (i > -1) this.contacts.splice(i, 1);
 //     //         this.renewContacts();
-//     //     },
-//     //     editContact(contact) {
-//     //         this.contactNew = false;
-//     //         this.contactEditSuccess = "";
-//     //         this.contactEditIndex = this.contacts.lastIndexOf(contact);
-//     //         this.contact = contact;
-//     //         localStorage.editContact = JSON.stringify(contact);
 //     //     },
 //     //     async addContact() {
 //     //         const result = await this.v$.$validate();
@@ -206,4 +241,3 @@ export default {
 //     // },
 // };
 </script>
-
