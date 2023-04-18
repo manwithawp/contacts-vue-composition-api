@@ -5,6 +5,8 @@ export function useContacts() {
 
   const contacts = ref([]);
 
+  const contactsEmpty = ref(false);
+
   if (localStorage.contactsList) {
     contacts.value = JSON.parse(localStorage.contactsList);
   } else {
@@ -16,9 +18,36 @@ export function useContacts() {
       }
       contacts.value = data;
     };
+
     onMounted(fetching);
   }
+
+  function setContacts(newContacts) {
+    contacts.value = newContacts;
+    localStorage.contactsList = JSON.stringify(newContacts);
+    if (!newContacts.length) {
+      contactsEmpty.value = true;
+    }
+  }
+
+  function addContact(newContact) {
+    const newContacts = [...contacts.value, newContact];
+    setContacts(newContacts);
+  }
+
+  function removeContact(email) {
+    const newContacts = contacts.value.filter(
+      (contact) => contact.email != email
+    );
+    // const newContacts = [...contacts.value];
+    // newContacts.splice(index, 1);
+    setContacts(newContacts);
+  }
+
   return {
     contacts,
+    addContact,
+    removeContact,
+    contactsEmpty,
   };
 }
